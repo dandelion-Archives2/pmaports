@@ -1,0 +1,28 @@
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-xiaomi-dandelion
+pkgdesc="Xiaomi Redmi 9A"
+pkgver=1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	linux-postmarketos-mediatek-mt6762
+	mkbootimg
+	postmarketos-base
+"
+makedepends="devicepkg-dev"
+source="deviceinfo"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+sha512sums="
+9abcebfbc17ab2c92608c3993b237a32bc92a30185532379b8f64859a0db697ad7f2c09e9b547f7aac6d2c4b65d89cd703487d366bab899ac141e99cef200749  deviceinfo
+"
