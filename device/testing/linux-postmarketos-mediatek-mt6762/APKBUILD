@@ -1,0 +1,37 @@
+# Kernel config: arch/arm64/configs/mt6765_defconfig
+
+_flavor="postmarketos-mediatek-mt6762"
+pkgname=linux-$_flavor
+pkgver=6.5_rc3
+pkgrel=0
+pkgdesc="Close-to-mainline kernel fork for devives with MediaTek MT6762 SoC"
+arch="aarch64"
+_carch="arm64"
+url="https://gitlab.com/mtk-mainline/mt6762/linux"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native pmb:kconfigcheck-zram"
+makedepends="
+	android-tools
+	bash
+	findutils
+	postmarketos-installkernel
+"
+
+builddir="$srcdir/linux"
+
+package() {
+	mkdir -p "$pkgdir"/boot
+	make zinstall modules_install dtbs_install \
+		ARCH="$_carch" \
+		INSTALL_MOD_STRIP=1 \
+		INSTALL_PATH="$pkgdir"/boot \
+		INSTALL_MOD_PATH="$pkgdir" \
+		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs
+
+	install -D "$builddir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
+
+	dtbodir="$builddir/arch/arm64/boot/dts/mediatek"
+	mkdtboimg create "$pkgdir"/boot/dtbo.img \
+		"$dtbodir"/mt6762g-xiaomi-dandelion-minimal-dtbo.dtb
+}
