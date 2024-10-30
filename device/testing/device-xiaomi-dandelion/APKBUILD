@@ -2,27 +2,37 @@
 pkgname=device-xiaomi-dandelion
 pkgdesc="Xiaomi Redmi 9A"
 pkgver=1
-pkgrel=0
+pkgrel=1
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
 options="!check !archcheck"
 depends="
-	linux-postmarketos-mediatek-mt6762
+	linux-postmarketos-mediatek-mt6765
 	mkbootimg
 	postmarketos-base
 "
-makedepends="devicepkg-dev"
-source="deviceinfo"
+makedepends="devicepkg-dev dtc"
+source="
+	deviceinfo
+	dts
+"
 
 build() {
 	devicepkg_build $startdir $pkgname
+
+	dtc -I dts -O dtb dts -o dtb
 }
 
 package() {
 	devicepkg_package $startdir $pkgname
+
+	dtbsdir="$pkgdir/boot/dtbs/mediatek"
+	install -Dm644 "$srcdir"/dtb \
+		"$dtbsdir"/mt6762g-xiaomi-dandelion.dtb
 }
 
 sha512sums="
 9abcebfbc17ab2c92608c3993b237a32bc92a30185532379b8f64859a0db697ad7f2c09e9b547f7aac6d2c4b65d89cd703487d366bab899ac141e99cef200749  deviceinfo
+d8f751aa4ee685802d2b43c6e3c796fd2cf148b15fa888f9fd939de53134c1e781414d762c3719ecb03d82794da0873cd25221ba59b105aa28306b11bc81e336  dts
 "
